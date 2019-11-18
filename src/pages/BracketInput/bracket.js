@@ -6,19 +6,18 @@ class BracketInput extends React.Component {
       super(props);
       this.state = {
          inputTemp: '',
+         falseText: '',
          users: []
       }
    }
 
    componentDidMount() {
-      // get current users in bracket, this will have to be implemented and rendered later...
       fetch('http://localhost:5252/')
-      .then(response => response.json()) //Dont need this until backend is established.
+      .then(response => response.json()) 
       .then(data => {
          console.log(data)
          this.setState({users: data})
       })
-
    }
 
 
@@ -32,7 +31,26 @@ class BracketInput extends React.Component {
       event.preventDefault()
       console.log(`Adding user:${this.state.inputTemp}`)
       this.state.users.push(this.state.inputTemp)
-      // Here you will require the backend to actually update the data.
+
+      fetch('http://localhost:5252/adduser', {
+         method:'POST',
+         headers: {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({username: this.state.inputTemp})
+         })
+         .then(response => {
+            console.log(response)
+            console.log('Adding user...')
+            this.setState({inputTemp: ''})
+            fetch('http://localhost:5252/')
+               .then(response => response.json()) 
+               .then(data => {
+               console.log(data)
+               this.setState({users: data, inputTemp: ''})
+            })
+      })
    }
 
    displayUsers = (users) => {
@@ -40,12 +58,36 @@ class BracketInput extends React.Component {
          return(
             <div>
                {specificPerson.username}
+               <button onClick = {e => {this.deleteUser(e, specificPerson.user_id)}}>
+                  Delete
+               </button>
             </div>
          )
       })
       return group
 
    } 
+
+   deleteUser = (event,id) => {
+      event.preventDefault()
+      console.log(`Deleting User #${id}`)
+      fetch(`http://localhost:5252/deleteuser/${id}`,{
+         method: 'DELETE',
+         headers: {'Content-Type': 'application/json'},
+         body: JSON.stringify({user_id: id})
+      })
+      .then(response => response.json())
+      .then(data => {
+         console.log(data);
+         fetch('http://localhost:5252/')
+         .then(response => response.json()) 
+         .then(data => {
+            console.log(data)
+            this.setState({users: data})
+         })
+
+      })
+   }
 
    render() {
       return(
@@ -54,7 +96,7 @@ class BracketInput extends React.Component {
             Form 1: 
             <form onSubmit = {e => this.addUser(e)}>
                <p>Please insert the following information:</p>
-               Player Username: <input required type = 'text' onChange = {e => this.userInfo(e)} />
+               Player Username: <input required type = 'text' value = {this.state.inputTemp} onChange = {e => this.userInfo(e)} />
                <button>Add user</button>
             </form>
 
