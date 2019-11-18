@@ -39,7 +39,7 @@ class BracketInput extends React.Component {
       var group = users.map(specificPerson => {
          return(
             <div>
-               {specificPerson}
+               {specificPerson.username}
             </div>
          )
       })
