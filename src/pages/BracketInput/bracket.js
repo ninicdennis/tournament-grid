@@ -1,5 +1,6 @@
 import React from 'react'
 import './bracket.css'
+import BracketChart from '../BracketChart/chart.js';
 
 class BracketInput extends React.Component {
    constructor(props) {
@@ -91,6 +92,31 @@ class BracketInput extends React.Component {
       })
    }
 
+   sendRequest = (event, currentUsers) => {
+      event.preventDefault()
+      const userPool = currentUsers // user_id, username object.
+      console.log(`Creating game with: ${userPool}`)
+
+      for(var i = 0; i < userPool.length; i++){ // Adjusting user ID's here so they are itterable for the bracket. 
+         console.log('iteration', i + 1)
+         userPool[i].user_id = i + 1
+         console.log('Adjusting user ID')
+      }
+
+      // Random key gen to view current bracket.
+      var viewKey = Math.random().toString(36).substring(2, 10)
+      console.log(viewKey)
+
+      fetch('http://localhost:5252/generatepool', {
+         method: 'POST',
+         headers: {'Content-type': 'application/json'},
+         body: JSON.stringify({
+            key : viewKey,
+            user_pool: userPool
+         })
+      })
+   }
+
    render() {
       return(
          <div className = 'mainForm'>
@@ -109,6 +135,8 @@ class BracketInput extends React.Component {
             <div className = 'userspace'>
             Users: {this.displayUsers(this.state.users)}
             </div>
+            <button onClick = {e => this.sendRequest(e, this.state.users)}>Generate Pool</button>
+            <BracketChart/>
          </div>
       )
    }
