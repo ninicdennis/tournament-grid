@@ -10,3 +10,15 @@ form {
    display: flex;
    flex-direction: column;
 }
+
+.userspace {
+   display: flex;
+   justify-content: space-between;
+   flex-direction: column;
+   width: 50%;
+}
+
+.row {
+   display: flex;
+   justify-content: space-between;
+}

@@ -56,8 +56,10 @@ class BracketInput extends React.Component {
    displayUsers = (users) => {
       var group = users.map(specificPerson => {
          return(
-            <div>
+            <div className = 'row' key = {specificPerson.user_id}>
+               <span>
                {specificPerson.username}
+               </span>
                <button onClick = {e => {this.deleteUser(e, specificPerson.user_id)}}>
                   Delete
                </button>
@@ -104,11 +106,9 @@ class BracketInput extends React.Component {
             <form>
                <p>Generate random pool</p>
             </form>
+            <div className = 'userspace'>
             Users: {this.displayUsers(this.state.users)}
-
-            <button onClick = {e => console.log(this.state.inputTemp)}>Input Temp</button>
-            <button onClick = {e => console.log(this.state.users)}>Users currently in game</button>
-
+            </div>
          </div>
       )
    }

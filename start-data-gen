@@ -1,0 +1,7 @@
+#!/bin/bash
+clear
+echo "Running Migration..."
+
+knex migrate:latest --knexfile webapi/knexfile.js
+
+knex seed:run --knexfile webapi/knexfile.js
